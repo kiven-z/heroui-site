@@ -1,4 +1,4 @@
-import type { PageResult } from '@/components/table/data-table';
+import type { PageResult } from '@/components/ui/data-table';
 
 export interface Member {
   id: number;

@@ -1,8 +1,8 @@
-import type { DataTableColumn } from '@/components/table/data-table';
+import type { DataTableColumn } from '@/components/ui/data-table';
 
 import { Button, Chip } from '@heroui/react';
 
-import { STATUS_COLOR, type Member } from './members';
+import { type Member, STATUS_COLOR } from './members';
 
 import { addDialog } from '@/components/ui/dialog';
 

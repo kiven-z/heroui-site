@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react';
-import type { DataTableColumn, DataTableProps } from './types';
+import type { DataTableColumn, DataTableProps } from './types.ts';
 
 import { Checkbox, EmptyState, Spinner, Table } from '@heroui/react';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 
-import { DataTablePagination } from './data-table-pagination';
+import { DataTablePagination } from './data-table-pagination.tsx';
 
 function resolveRowId<T extends object>(row: T, rowKey: DataTableProps<T>['rowKey']): string | number {
   if (typeof rowKey === 'function') {

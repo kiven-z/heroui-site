@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { memberColumns } from './member-columns';
 import { EMPTY_QUERY, fetchMembers, type Member } from './members';
 
-import { DataTable, usePaginationState } from '@/components/table/data-table';
+import { DataTable, usePaginationState } from '@/components/ui/data-table';
 
 export function DataTableDemo() {
   const selectableState = usePaginationState<Member>({

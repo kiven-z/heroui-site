@@ -1,4 +1,4 @@
-import type { DataTableSelection, FetchTableDataOptions, PageResult, PaginationTableState } from '../types';
+import type { DataTableSelection, FetchTableDataOptions, PageResult, PaginationTableState } from '../types.ts';
 
 import { toast } from '@heroui/react';
 import { useCallback, useRef, useState } from 'react';
