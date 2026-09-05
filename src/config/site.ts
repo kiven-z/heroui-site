@@ -4,7 +4,5 @@ export const siteConfig = {
   navItems: [
     { labelKey: 'nav.features', href: '/' },
     { labelKey: 'nav.table', href: '/data-table' },
-    { labelKey: 'nav.integrations', href: '/integrations' },
-    { labelKey: 'nav.pricing', href: '/pricing' },
   ],
 } as const;

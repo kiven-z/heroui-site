@@ -45,7 +45,7 @@ function resolveRowSelectionLabel<T extends object>(
   if (column?.accessor != null) {
     const value = row[column.accessor];
 
-    if (typeof value === 'string' || typeof value === 'number') {
+    if (value != null) {
       return String(value);
     }
   }

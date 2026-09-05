@@ -8,12 +8,4 @@ export const appRoutes: RouteObject[] = [
     path: 'data-table',
     lazy: () => import('@/features/data-table').then((m) => ({ Component: m.default })),
   },
-  {
-    path: 'integrations',
-    lazy: () => import('@/features/integrations').then((m) => ({ Component: m.default })),
-  },
-  {
-    path: 'pricing',
-    lazy: () => import('@/features/pricing').then((m) => ({ Component: m.default })),
-  },
 ];
