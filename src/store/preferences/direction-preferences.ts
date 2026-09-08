@@ -41,6 +41,7 @@ export const useDirectionPreferencesStore = create<DirectionPreferencesState>()(
       name: 'ui.direction',
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({ direction: state.direction }),
+      skipHydration: true,
     }
   )
 );

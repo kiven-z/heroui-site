@@ -1,10 +1,6 @@
 import { Button, Dropdown, Label } from '@heroui/react';
 import { useTranslation } from 'react-i18next';
 
-import TextDirectionL from '~icons/ri/text-direction-l';
-import TextDirectionR from '~icons/ri/text-direction-r';
-import Translate from '~icons/ri/translate';
-
 import { Icon } from '@/components/ui/icon';
 import { DIRECTION_ITEMS, LOCALES } from '@/config/locale-config';
 import { THEMES } from '@/config/ui-config';
@@ -21,7 +17,7 @@ export function LayoutNavbarPreferences() {
 
   const direction = useDirectionPreferencesStore((state) => state.direction);
   const setDirection = useDirectionPreferencesStore((state) => state.setDirection);
-  const DirectionTriggerIcon = direction === 'rtl' ? TextDirectionR : TextDirectionL;
+  const directionTriggerIcon = direction === 'rtl' ? 'ri:text-direction-r' : 'ri:text-direction-l';
 
   const colorScheme = useThemePreferencesStore((state) => state.colorScheme);
   const setColorScheme = useThemePreferencesStore((state) => state.setColorScheme);
@@ -63,7 +59,7 @@ export function LayoutNavbarPreferences() {
 
       <Dropdown>
         <Button isIconOnly aria-label={t('panel.locale.title')} size="sm" variant="ghost">
-          <Translate aria-hidden className="size-4 text-foreground" />
+          <Icon className="size-4 text-foreground" name="ri:translate" />
         </Button>
 
         <Dropdown.Popover placement="bottom end">
@@ -84,7 +80,7 @@ export function LayoutNavbarPreferences() {
 
       <Dropdown>
         <Button isIconOnly aria-label={t('panel.direction.title')} size="sm" variant="ghost">
-          <DirectionTriggerIcon aria-hidden className="size-4 text-foreground" />
+          <Icon className="size-4 text-foreground" name={directionTriggerIcon} />
         </Button>
 
         <Dropdown.Popover placement="bottom end">

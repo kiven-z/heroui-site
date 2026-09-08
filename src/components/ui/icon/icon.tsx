@@ -1,6 +1,7 @@
 import { Icon as Iconify } from '@iconify/react';
+import clsx from 'clsx';
 
-import { OFFLINE_ICONS } from './offline';
+import './offline';
 
 interface IconProps {
   /** Iconify 名，如 `ri:sun-line` */
@@ -11,15 +12,17 @@ interface IconProps {
 }
 
 /**
- * 配置 / 接口中的图标名：离线表命中用编译产物，否则走 Iconify CDN。
- * 组件内写死的图标请直接 `import … from '~icons/…'`，不要走本组件。
+ * 配置名与组件内写死的 `ri:…` 都走 Iconify。
+ * 壳层常用图标在 `offline.ts` 注册，其余按名加载。
  */
 export function Icon({ name, className, width, height }: IconProps) {
-  const OfflineIcon = OFFLINE_ICONS[name];
-
-  if (OfflineIcon) {
-    return <OfflineIcon aria-hidden className={className} height={height} width={width} />;
-  }
-
-  return <Iconify aria-hidden className={className} height={height} icon={name} width={width} />;
+  return (
+    <Iconify
+      aria-hidden
+      className={clsx('inline-block shrink-0', className)}
+      height={height ?? 'unset'}
+      icon={name}
+      width={width ?? 'unset'}
+    />
+  );
 }

@@ -82,33 +82,9 @@ function openDismissLockedDrawer() {
   });
 }
 
-function openStackedDrawers() {
-  addDrawer({
-    title: 'Bottom drawer',
-    className: 'w-[600px]',
-    content: 'This drawer sits behind the second one.',
-  });
-
-  addDrawer({
-    title: 'Top drawer',
-    content: (
-      <ol className="ms-6 list-outside list-decimal space-y-1">
-        <li>This drawer is stacked above the first one.</li>
-        <li>Press Confirm to show loading, then close this layer.</li>
-      </ol>
-    ),
-    beforeSure: async (done) => {
-      await new Promise<void>((resolve) => {
-        window.setTimeout(resolve, 400);
-      });
-      done();
-    },
-  });
-}
-
 /** DEV-only imperative Drawer demo. Omitted from production builds. */
 export function HomeDrawerDemo() {
-  if (!import.meta.env.DEV) {
+  if (process.env.NODE_ENV !== 'development') {
     return null;
   }
 
@@ -128,9 +104,6 @@ export function HomeDrawerDemo() {
       </Button>
       <Button variant="outline" onPress={openDismissLockedDrawer}>
         Drawer: Lock backdrop and Escape
-      </Button>
-      <Button variant="tertiary" onPress={openStackedDrawers}>
-        Stacked drawers
       </Button>
     </div>
   );

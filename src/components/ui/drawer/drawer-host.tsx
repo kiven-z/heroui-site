@@ -1,29 +1,28 @@
-import { useEffect } from 'react';
+'use client';
+
+import { useEffect, useRef } from 'react';
+import { usePathname } from 'next/navigation';
 
 import { DrawerItem } from './drawer-item';
 import { closeAllDrawer, useDrawerStore } from './drawer-store';
 
-import { router } from '@/router';
-
 /**
  * 全局 Drawer 宿主，与路由树并列挂在应用根上。
- * 订阅队列渲染各抽屉，并在客户端路由变化时清空 Drawer 栈。
+ * 订阅当前抽屉并渲染；客户端路由变化时清空。
  */
 export function DrawerHost() {
   const items = useDrawerStore((state) => state.items);
+  const pathname = usePathname();
+  const previousPathname = useRef(pathname);
 
   useEffect(() => {
-    let previousKey = router.state.location.key;
+    if (previousPathname.current === pathname) {
+      return;
+    }
 
-    return router.subscribe((state) => {
-      if (state.location.key === previousKey) {
-        return;
-      }
-
-      previousKey = state.location.key;
-      closeAllDrawer();
-    });
-  }, []);
+    previousPathname.current = pathname;
+    closeAllDrawer();
+  }, [pathname]);
 
   return (
     <>

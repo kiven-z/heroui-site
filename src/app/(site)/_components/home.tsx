@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@heroui/react';
 
 import { HomeDialogDemo } from './home-dialog-demo';
@@ -11,8 +13,8 @@ export default function HomePage() {
       <div className="inline-block max-w-xl">
         <h1 className={title()}>heroui-site</h1>
         <p className={subtitle({ class: 'mt-4' })}>
-          Vite + React + HeroUI site starter. Dialog and Drawer hosts are mounted at the app root, alongside the route
-          tree.
+          Next.js + React + HeroUI site starter. Dialog and Drawer hosts mount at the application root, alongside the
+          route tree.
         </p>
       </div>
 

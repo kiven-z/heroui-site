@@ -1,3 +1,5 @@
+'use client';
+
 import { DataTableDemo } from './data-table-demo';
 
 import { subtitle, title } from '@/components/primitives';

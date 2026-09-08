@@ -84,6 +84,7 @@ export const useThemePreferencesStore = create<ThemePreferencesState>()(
       name: 'ui.theme',
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({ colorScheme: state.colorScheme }),
+      skipHydration: true,
     }
   )
 );

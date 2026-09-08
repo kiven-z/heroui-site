@@ -1,35 +1,15 @@
-import { useLocalePreferencesStore } from '@/store/preferences/locale-preferences';
 import { useDirectionPreferencesStore } from '@/store/preferences/direction-preferences';
+import { useLocalePreferencesStore } from '@/store/preferences/locale-preferences';
 import { useThemePreferencesStore } from '@/store/preferences/theme-preferences';
 
-interface PersistHydrationApi {
-  persist: {
-    hasHydrated: () => boolean;
-    onFinishHydration: (fn: () => void) => () => void;
-  };
-}
-
-function waitHydrated(store: PersistHydrationApi): Promise<void> {
-  return new Promise((resolve) => {
-    const unsub = store.persist.onFinishHydration(() => {
-      resolve();
-    });
-
-    if (store.persist.hasHydrated()) {
-      unsub();
-      resolve();
-    }
-  });
-}
-
 /**
- * 等待各偏好 store 水合完成后，将 UI 偏好应用到 DOM（冷启动入口）
+ * 客户端重新水合各偏好 store 后，将 UI 偏好应用到 DOM
  */
 export async function applyHydratedUiPreferences(): Promise<void> {
   await Promise.all([
-    waitHydrated(useThemePreferencesStore),
-    waitHydrated(useLocalePreferencesStore),
-    waitHydrated(useDirectionPreferencesStore),
+    useThemePreferencesStore.persist.rehydrate(),
+    useLocalePreferencesStore.persist.rehydrate(),
+    useDirectionPreferencesStore.persist.rehydrate(),
   ]);
 
   const theme = useThemePreferencesStore.getState();

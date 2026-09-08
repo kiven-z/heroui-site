@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
-import { i18n } from '@/app/i18n';
+import { i18n } from '@/i18n';
 import { DEFAULT_LOCALE, LOCALES, type LocaleType } from '@/config/locale-config';
 
 const LOCALE_SET = new Set<string>(LOCALES.map((item) => item.locale));
@@ -45,6 +45,7 @@ export const useLocalePreferencesStore = create<LocalePreferencesState>()(
       name: 'ui.locale',
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({ locale: state.locale }),
+      skipHydration: true,
     }
   )
 );

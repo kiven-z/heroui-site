@@ -1,3 +1,5 @@
+'use client';
+
 import type { DialogStoreItem } from './dialog-store';
 import type { DialogFooterButton } from './types';
 
@@ -27,7 +29,7 @@ function DialogActionButton({ label, isDisabled, isPending, variant, onPress }: 
 }
 
 /**
- * 单个命令式 Dialog：受控 HeroUI Modal，退出动画结束后再从队列移除。
+ * 单个命令式 Dialog：受控 HeroUI Modal，退出动画结束后再移除。
  */
 export function DialogItem({ item }: DialogItemProps) {
   const { t } = useTranslation();

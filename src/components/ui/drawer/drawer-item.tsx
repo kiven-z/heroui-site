@@ -1,3 +1,5 @@
+'use client';
+
 import type { DrawerStoreItem } from './drawer-store';
 import type { DrawerFooterButton } from './types';
 
@@ -27,7 +29,7 @@ function DrawerActionButton({ label, isDisabled, isPending, variant, onPress }: 
 }
 
 /**
- * 单个命令式 Drawer：受控 HeroUI Drawer，退出动画结束后再从队列移除。
+ * 单个命令式 Drawer：受控 HeroUI Drawer，退出动画结束后再移除。
  */
 export function DrawerItem({ item }: DrawerItemProps) {
   const { t } = useTranslation();

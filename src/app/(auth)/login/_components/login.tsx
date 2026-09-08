@@ -1,8 +1,9 @@
+'use client';
+
 import type { SyntheticEvent } from 'react';
 
 import { Button, Card, Input, Label, TextField, toast } from '@heroui/react';
 import { useTranslation } from 'react-i18next';
-import { Form } from 'react-router-dom';
 
 export default function LoginPage() {
   const { t } = useTranslation();
@@ -19,7 +20,7 @@ export default function LoginPage() {
           <Card.Title>{t('login.title')}</Card.Title>
         </Card.Header>
         <Card.Content>
-          <Form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+          <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
             <TextField isRequired name="email" type="email">
               <Label>{t('login.email')}</Label>
               <Input placeholder="name@example.com" />
@@ -31,7 +32,7 @@ export default function LoginPage() {
             <Button className="w-full" type="submit">
               {t('login.submit')}
             </Button>
-          </Form>
+          </form>
         </Card.Content>
       </Card>
     </div>

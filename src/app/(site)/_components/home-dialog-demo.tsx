@@ -124,32 +124,9 @@ function openCustomContentDialog() {
   });
 }
 
-function openStackedDialogs() {
-  addDialog({
-    title: 'Bottom dialog',
-    content: 'This dialog sits behind the second one.',
-  });
-
-  addDialog({
-    title: 'Top dialog',
-    content: (
-      <ol className="ms-6 list-outside list-decimal space-y-1">
-        <li>This dialog is stacked above the first one.</li>
-        <li>Press Confirm to show loading, then close this layer.</li>
-      </ol>
-    ),
-    beforeSure: async (done) => {
-      await new Promise<void>((resolve) => {
-        window.setTimeout(resolve, 400);
-      });
-      done();
-    },
-  });
-}
-
 /** DEV-only imperative Dialog demo. Omitted from production builds. */
 export function HomeDialogDemo() {
-  if (!import.meta.env.DEV) {
+  if (process.env.NODE_ENV !== 'development') {
     return null;
   }
 
@@ -172,9 +149,6 @@ export function HomeDialogDemo() {
       </Button>
       <Button variant="secondary" onPress={openCustomContentDialog}>
         Custom content
-      </Button>
-      <Button variant="tertiary" onPress={openStackedDialogs}>
-        Stacked dialogs
       </Button>
     </div>
   );

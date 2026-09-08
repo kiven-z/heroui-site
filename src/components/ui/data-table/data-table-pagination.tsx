@@ -1,10 +1,10 @@
 import type { Key } from 'react';
-import type { DataTablePagination as DataTablePaginationValue } from './types.ts';
+import type { DataTablePagination as DataTablePaginationValue } from './types';
 
 import { ListBox, Pagination, Select } from '@heroui/react';
 import { useTranslation } from 'react-i18next';
 
-import { DEFAULT_PAGE_SIZES } from './constants.ts';
+import { DEFAULT_PAGE_SIZES } from './constants';
 
 interface DataTablePaginationProps {
   pagination: DataTablePaginationValue;

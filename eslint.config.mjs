@@ -134,11 +134,6 @@ export default defineConfig([
               group: "external",
               position: "after",
             },
-            {
-              pattern: "~icons/**",
-              group: "external",
-              position: "after",
-            },
           ],
 
           "newlines-between": "always",

@@ -1,25 +1,36 @@
+'use client';
+
 import { Button, Drawer, useOverlayState } from '@heroui/react';
 import clsx from 'clsx';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
-import { Link, NavLink } from 'react-router-dom';
 
-import MenuLine from '~icons/ri/menu-line';
-
+import { Icon } from '@/components/ui/icon';
 import { siteConfig } from '@/config/site';
 import { LayoutDrawerPreferences } from '@/layouts/layout-header/layout-drawer-preferences';
 import { LayoutNavbarAvatar } from '@/layouts/layout-header/layout-navbar-avatar';
 import { LayoutNavbarPreferences } from '@/layouts/layout-header/layout-navbar-preferences';
 import { useDirectionPreferencesStore } from '@/store/preferences/direction-preferences';
 
-function navLinkClassName({ isActive }: { isActive: boolean }) {
+function navLinkClassName(isActive: boolean) {
   return clsx(
     'text-sm transition-colors',
     isActive ? 'font-medium text-foreground' : 'text-muted hover:text-foreground'
   );
 }
 
+function isNavActive(pathname: string, href: string) {
+  if (href === '/') {
+    return pathname === '/';
+  }
+
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
 export function LayoutHeader() {
   const { t } = useTranslation();
+  const pathname = usePathname();
   const menu = useOverlayState();
   const direction = useDirectionPreferencesStore((state) => state.direction);
 
@@ -36,10 +47,10 @@ export function LayoutHeader() {
             variant="ghost"
             onPress={menu.open}
           >
-            <MenuLine aria-hidden className="size-4 text-foreground" />
+            <Icon className="size-4 text-foreground" name="ri:menu-line" />
           </Button>
 
-          <Link className="flex min-w-0 shrink-0 items-center gap-2 text-foreground" to="/">
+          <Link className="flex min-w-0 shrink-0 items-center gap-2 text-foreground" href="/">
             <img alt="" className="size-7" src="/logo.svg" />
             <span className="truncate text-base font-semibold tracking-tight">{siteConfig.name}</span>
           </Link>
@@ -48,9 +59,9 @@ export function LayoutHeader() {
         <ul className="hidden items-center gap-6 md:flex">
           {siteConfig.navItems.map((item) => (
             <li key={item.href}>
-              <NavLink className={navLinkClassName} end={item.href === '/'} to={item.href}>
+              <Link className={navLinkClassName(isNavActive(pathname, item.href))} href={item.href}>
                 {t(item.labelKey)}
-              </NavLink>
+              </Link>
             </li>
           ))}
         </ul>
@@ -74,14 +85,16 @@ export function LayoutHeader() {
               <ul className="flex flex-col gap-1">
                 {siteConfig.navItems.map((item) => (
                   <li key={item.href}>
-                    <NavLink
-                      className={({ isActive }) => clsx(navLinkClassName({ isActive }), 'block rounded-xl px-3 py-2.5')}
-                      end={item.href === '/'}
-                      to={item.href}
+                    <Link
+                      className={clsx(
+                        navLinkClassName(isNavActive(pathname, item.href)),
+                        'block rounded-xl px-3 py-2.5'
+                      )}
+                      href={item.href}
                       onClick={menu.close}
                     >
                       {t(item.labelKey)}
-                    </NavLink>
+                    </Link>
                   </li>
                 ))}
               </ul>

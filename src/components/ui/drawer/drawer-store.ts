@@ -4,7 +4,7 @@ import { create } from 'zustand';
 
 import { runOverlayBeforeSure } from '@/components/ui/overlay';
 
-/** 队列中的单个 Drawer 运行时项 */
+/** 当前 Drawer 运行时项（同刻至多一项） */
 export interface DrawerStoreItem {
   id: string;
   isOpen: boolean;
@@ -29,16 +29,15 @@ function patchItem(id: string, patch: Partial<DrawerStoreItem>) {
 }
 
 /**
- * 打开 Drawer
+ * 打开 Drawer。同刻仅一层：再次打开会直接替换当前项（无障碍优先，不支持堆叠）。
  * @param options 打开参数
  * @returns 稳定 id，供 `closeDrawer` / `confirmDrawer` 使用
  */
 export function addDrawer(options: DrawerOptions): string {
   const id = crypto.randomUUID();
 
-  useDrawerStore.setState((state) => ({
+  useDrawerStore.setState({
     items: [
-      ...state.items,
       {
         id,
         isOpen: true,
@@ -46,7 +45,7 @@ export function addDrawer(options: DrawerOptions): string {
         confirmLoading: false,
       },
     ],
-  }));
+  });
 
   return id;
 }
@@ -67,7 +66,7 @@ export function closeDrawer(id: string, command: DrawerCloseCommand = 'close'): 
 }
 
 /**
- * 关闭动画结束后：回调一次并从队列移除
+ * 关闭动画结束后：回调一次并从列表移除
  * @param id 弹层 id
  */
 export function finalizeDrawerClose(id: string): void {
