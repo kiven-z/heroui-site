@@ -1,10 +1,22 @@
+import type { ReactNode } from 'react';
+
 import { Button } from '@heroui/react';
+import { useState } from 'react';
 
-import { addDrawer } from '@/components/ui/drawer';
+import { Drawer } from '@/components/ui/drawer';
 
-/** Confirm stays pending until `beforeSure` resolves, then closes. */
-function openConfirmLoadingDrawer() {
-  addDrawer({
+type DrawerDemoId = 'confirm' | 'noFooter' | 'lockBackdrop' | 'lockEscape' | 'lockDismiss';
+
+interface DrawerDemo {
+  title: string;
+  hideFooter?: boolean;
+  isDismissable?: boolean;
+  isKeyboardDismissDisabled?: boolean;
+  content: ReactNode;
+}
+
+const DRAWER_DEMOS: Record<DrawerDemoId, DrawerDemo> = {
+  confirm: {
     title: 'Confirm loading',
     content: (
       <ol className="ms-6 list-outside list-decimal space-y-1">
@@ -12,18 +24,8 @@ function openConfirmLoadingDrawer() {
         <li>Cancel, the X, the backdrop, and Escape still close immediately.</li>
       </ol>
     ),
-    beforeSure: async (done) => {
-      await new Promise<void>((resolve) => {
-        window.setTimeout(resolve, 400);
-      });
-      done();
-    },
-  });
-}
-
-/** Footer hidden. Default dismiss: X, backdrop, and Escape. */
-function openFooterLessDrawer() {
-  addDrawer({
+  },
+  noFooter: {
     title: 'No footer',
     hideFooter: true,
     content: (
@@ -32,12 +34,8 @@ function openFooterLessDrawer() {
         <li>Close with the X, the backdrop, or Escape.</li>
       </ol>
     ),
-  });
-}
-
-/** Backdrop click does not close. X and Escape still do. */
-function openBackdropLockedDrawer() {
-  addDrawer({
+  },
+  lockBackdrop: {
     title: 'Backdrop locked',
     hideFooter: true,
     isDismissable: false,
@@ -47,12 +45,8 @@ function openBackdropLockedDrawer() {
         <li>Close with the X or Escape.</li>
       </ol>
     ),
-  });
-}
-
-/** Escape does not close. X and backdrop still do. */
-function openEscapeLockedDrawer() {
-  addDrawer({
+  },
+  lockEscape: {
     title: 'Escape locked',
     hideFooter: true,
     isKeyboardDismissDisabled: true,
@@ -62,14 +56,9 @@ function openEscapeLockedDrawer() {
         <li>Close with the X or by clicking the backdrop.</li>
       </ol>
     ),
-  });
-}
-
-/** Backdrop and Escape both locked. Only the X closes. */
-function openDismissLockedDrawer() {
-  addDrawer({
+  },
+  lockDismiss: {
     title: 'Backdrop and Escape locked',
-
     hideFooter: true,
     isDismissable: false,
     isKeyboardDismissDisabled: true,
@@ -79,32 +68,69 @@ function openDismissLockedDrawer() {
         <li>Close with the X.</li>
       </ol>
     ),
-  });
-}
+  },
+};
 
-/** DEV-only imperative Drawer demo. Omitted from production builds. */
+/** DEV-only controlled Drawer demo. Omitted from production builds. */
 export function HomeDrawerDemo() {
+  const [demo, setDemo] = useState<DrawerDemoId | null>(null);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const current = demo ? DRAWER_DEMOS[demo] : null;
+
+  function handleOpenChange(open: boolean) {
+    if (open) {
+      return;
+    }
+
+    setConfirmLoading(false);
+    setDemo(null);
+  }
+
+  async function handleConfirm() {
+    setConfirmLoading(true);
+    await new Promise<void>((resolve) => {
+      window.setTimeout(resolve, 400);
+    });
+    setConfirmLoading(false);
+    setDemo(null);
+  }
+
   if (process.env.NODE_ENV !== 'development') {
     return null;
   }
 
   return (
-    <div className="flex flex-wrap gap-3">
-      <Button variant="primary" onPress={openConfirmLoadingDrawer}>
-        Drawer: Confirm loading
-      </Button>
-      <Button variant="secondary" onPress={openFooterLessDrawer}>
-        Drawer: No footer
-      </Button>
-      <Button variant="tertiary" onPress={openBackdropLockedDrawer}>
-        Drawer: Lock backdrop
-      </Button>
-      <Button variant="ghost" onPress={openEscapeLockedDrawer}>
-        Drawer: Lock Escape
-      </Button>
-      <Button variant="outline" onPress={openDismissLockedDrawer}>
-        Drawer: Lock backdrop and Escape
-      </Button>
-    </div>
+    <>
+      <div className="flex flex-wrap gap-3">
+        <Button variant="primary" onPress={() => setDemo('confirm')}>
+          Drawer: Confirm loading
+        </Button>
+        <Button variant="secondary" onPress={() => setDemo('noFooter')}>
+          Drawer: No footer
+        </Button>
+        <Button variant="tertiary" onPress={() => setDemo('lockBackdrop')}>
+          Drawer: Lock backdrop
+        </Button>
+        <Button variant="ghost" onPress={() => setDemo('lockEscape')}>
+          Drawer: Lock Escape
+        </Button>
+        <Button variant="outline" onPress={() => setDemo('lockDismiss')}>
+          Drawer: Lock backdrop and Escape
+        </Button>
+      </div>
+
+      <Drawer
+        confirmLoading={confirmLoading}
+        hideFooter={current?.hideFooter}
+        isDismissable={current?.isDismissable}
+        isKeyboardDismissDisabled={current?.isKeyboardDismissDisabled}
+        open={demo !== null}
+        title={current?.title ?? ''}
+        onConfirm={demo === 'confirm' ? handleConfirm : undefined}
+        onOpenChange={handleOpenChange}
+      >
+        {current?.content}
+      </Drawer>
+    </>
   );
 }

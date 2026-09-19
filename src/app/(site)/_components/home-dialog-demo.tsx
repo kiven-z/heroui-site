@@ -1,11 +1,13 @@
+import type { ReactNode } from 'react';
+
 import { Button, Disclosure } from '@heroui/react';
 import { Icon } from '@iconify/react';
-import React from 'react';
+import { useState } from 'react';
 
-import { addDialog } from '@/components/ui/dialog';
+import { Dialog } from '@/components/ui/dialog';
 
 function NativePreviewPanel() {
-  const [isExpanded, setIsExpanded] = React.useState(true);
+  const [isExpanded, setIsExpanded] = useState(true);
 
   return (
     <div className="w-full max-w-md text-center">
@@ -38,9 +40,18 @@ function NativePreviewPanel() {
   );
 }
 
-/** Confirm stays pending until `beforeSure` resolves, then closes. */
-function openConfirmLoadingDialog() {
-  addDialog({
+type DialogDemoId = 'confirm' | 'noFooter' | 'lockBackdrop' | 'lockEscape' | 'lockDismiss' | 'custom';
+
+interface DialogDemo {
+  title: string;
+  hideFooter?: boolean;
+  isDismissable?: boolean;
+  isKeyboardDismissDisabled?: boolean;
+  content: ReactNode;
+}
+
+const DIALOG_DEMOS: Record<DialogDemoId, DialogDemo> = {
+  confirm: {
     title: 'Confirm loading',
     content: (
       <ol className="ms-6 list-outside list-decimal space-y-1">
@@ -48,18 +59,8 @@ function openConfirmLoadingDialog() {
         <li>Cancel, the X, the backdrop, and Escape still close immediately.</li>
       </ol>
     ),
-    beforeSure: async (done) => {
-      await new Promise<void>((resolve) => {
-        window.setTimeout(resolve, 400);
-      });
-      done();
-    },
-  });
-}
-
-/** Footer hidden. Default dismiss: X, backdrop, and Escape. */
-function openFooterLessDialog() {
-  addDialog({
+  },
+  noFooter: {
     title: 'No footer',
     hideFooter: true,
     content: (
@@ -68,12 +69,8 @@ function openFooterLessDialog() {
         <li>Close with the X, the backdrop, or Escape.</li>
       </ol>
     ),
-  });
-}
-
-/** Backdrop click does not close. X and Escape still do. */
-function openBackdropLockedDialog() {
-  addDialog({
+  },
+  lockBackdrop: {
     title: 'Backdrop locked',
     hideFooter: true,
     isDismissable: false,
@@ -83,12 +80,8 @@ function openBackdropLockedDialog() {
         <li>Close with the X or Escape.</li>
       </ol>
     ),
-  });
-}
-
-/** Escape does not close. X and backdrop still do. */
-function openEscapeLockedDialog() {
-  addDialog({
+  },
+  lockEscape: {
     title: 'Escape locked',
     hideFooter: true,
     isKeyboardDismissDisabled: true,
@@ -98,12 +91,8 @@ function openEscapeLockedDialog() {
         <li>Close with the X or by clicking the backdrop.</li>
       </ol>
     ),
-  });
-}
-
-/** Backdrop and Escape both locked. Only the X closes. */
-function openDismissLockedDialog() {
-  addDialog({
+  },
+  lockDismiss: {
     title: 'Backdrop and Escape locked',
     hideFooter: true,
     isDismissable: false,
@@ -114,42 +103,82 @@ function openDismissLockedDialog() {
         <li>Close with the X.</li>
       </ol>
     ),
-  });
-}
-
-function openCustomContentDialog() {
-  addDialog({
+  },
+  custom: {
     title: 'Custom content',
     content: <NativePreviewPanel />,
-  });
-}
+  },
+};
 
-/** DEV-only imperative Dialog demo. Omitted from production builds. */
+/** DEV-only controlled Dialog demo. Omitted from production builds. */
 export function HomeDialogDemo() {
+  const [demo, setDemo] = useState<DialogDemoId | null>(null);
+  const [open, setOpen] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const current = demo ? DIALOG_DEMOS[demo] : null;
+
+  function handleOpen(id: DialogDemoId) {
+    setDemo(id);
+    setConfirmLoading(false);
+    setOpen(true);
+  }
+
+  function handleOpenChange(nextOpen: boolean) {
+    setOpen(nextOpen);
+
+    if (!nextOpen) {
+      setConfirmLoading(false);
+    }
+  }
+
+  async function handleConfirm() {
+    setConfirmLoading(true);
+    await new Promise<void>((resolve) => {
+      window.setTimeout(resolve, 400);
+    });
+    setConfirmLoading(false);
+    setOpen(false);
+  }
+
   if (process.env.NODE_ENV !== 'development') {
     return null;
   }
 
   return (
-    <div className="flex flex-wrap gap-3">
-      <Button variant="primary" onPress={openConfirmLoadingDialog}>
-        Confirm loading
-      </Button>
-      <Button variant="secondary" onPress={openFooterLessDialog}>
-        No footer
-      </Button>
-      <Button variant="tertiary" onPress={openBackdropLockedDialog}>
-        Lock backdrop
-      </Button>
-      <Button variant="ghost" onPress={openEscapeLockedDialog}>
-        Lock Escape
-      </Button>
-      <Button variant="outline" onPress={openDismissLockedDialog}>
-        Lock backdrop and Escape
-      </Button>
-      <Button variant="secondary" onPress={openCustomContentDialog}>
-        Custom content
-      </Button>
-    </div>
+    <>
+      <div className="flex flex-wrap gap-3">
+        <Button variant="primary" onPress={() => handleOpen('confirm')}>
+          Confirm loading
+        </Button>
+        <Button variant="secondary" onPress={() => handleOpen('noFooter')}>
+          No footer
+        </Button>
+        <Button variant="tertiary" onPress={() => handleOpen('lockBackdrop')}>
+          Lock backdrop
+        </Button>
+        <Button variant="ghost" onPress={() => handleOpen('lockEscape')}>
+          Lock Escape
+        </Button>
+        <Button variant="outline" onPress={() => handleOpen('lockDismiss')}>
+          Lock backdrop and Escape
+        </Button>
+        <Button variant="secondary" onPress={() => handleOpen('custom')}>
+          Custom content
+        </Button>
+      </div>
+
+      <Dialog
+        confirmLoading={confirmLoading}
+        hideFooter={current?.hideFooter}
+        isDismissable={current?.isDismissable}
+        isKeyboardDismissDisabled={current?.isKeyboardDismissDisabled}
+        open={open}
+        title={current?.title ?? ''}
+        onConfirm={demo === 'confirm' ? handleConfirm : undefined}
+        onOpenChange={handleOpenChange}
+      >
+        {current?.content}
+      </Dialog>
+    </>
   );
 }

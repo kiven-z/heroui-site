@@ -19,9 +19,9 @@ A site skeleton built with Next.js, React, and HeroUI v3.
 ## Features
 
 - Site layout: header, main content, and footer; desktop navigation and mobile drawer menu
-- Global hosts: Dialog, Drawer, and Toast mounted at the application root, alongside the route tree
-- Imperative Dialog: open / close / confirm / clear; single layer (reopens replace, no stacking), sizes, custom content and footer buttons, backdrop and Escape controls, pre-confirm validation with loading, post-exit-animation callbacks; cleared on route change
-- Imperative Drawer: same contract as Dialog; four-edge placement
+- Global host: Toast mounted at the application root, alongside the route tree
+- Controlled Dialog: `open` / `onOpenChange`; sizes, backdrop and Escape controls; confirm loading owned by the caller
+- Controlled Drawer: `open` / `onOpenChange`; four-edge placement
 - Data table: column-driven; controlled pagination, row selection, loading and empty states
 - Pagination state: fetch, page change, and selection; Toast on failure
 - UI preferences (persisted locally, applied to the DOM after hydration): light / dark / system; Simplified Chinese / English; LTR / RTL

@@ -13,8 +13,7 @@ export default function HomePage() {
       <div className="inline-block max-w-xl">
         <h1 className={title()}>heroui-site</h1>
         <p className={subtitle({ class: 'mt-4' })}>
-          Next.js + React + HeroUI site starter. Dialog and Drawer hosts mount at the application root, alongside the
-          route tree.
+          Next.js + React + HeroUI site starter. Dialogs and drawers are controlled with open / onOpenChange.
         </p>
       </div>
 
